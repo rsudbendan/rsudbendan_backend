@@ -2,26 +2,29 @@
 
 // 3rd
 const axios = require("axios");
+const { parseFlagList } = require("mysql/lib/ConnectionConfig");
 
 // local
 require('dotenv').config();
 
-const generate_token = async () => {
+const buat = async (token, body) => {
     try {
-        let url = process.env.SATU_SEHAT_AUTH_URL + '/accesstoken?grant_type=client_credentials';
-        let params = new URLSearchParams();
-        params.append('client_id', process.env.SATU_SEHAT_CLIENT_ID);
-        params.append('client_secret', process.env.SATU_SEHAT_CLIENT_SECRET);
+        let url = `${process.env.SATU_SEHAT_BASE_URL}/Encounter`;        
 
-        let response = await axios.post(url, params.toString(), {
+        let response = await axios.post(url, body, {
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
+                'Authorization': `Bearer ${token}`,
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+            }
         });
 
+        let pesan = "Sukses";
+        let status = response.status;
+
         return {
-            status: 200,
-            message: "Sukses",
+            status: status,
+            message: pesan,
             data: response.data
         };
     } catch (error) {
@@ -41,5 +44,5 @@ const generate_token = async () => {
 }
 
 module.exports = {
-    generate_token
+    buat
 };

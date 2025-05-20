@@ -6,7 +6,7 @@ const axios = require("axios");
 // local
 require('dotenv').config();
 
-const by_nik = async (token, nik) => {
+const cari_by_nik = async (token, nik) => {
     try {
         let url = process.env.SATU_SEHAT_BASE_URL + `/Patient?identifier=https://fhir.kemkes.go.id/id/nik|${nik}`;
 
@@ -32,7 +32,7 @@ const by_nik = async (token, nik) => {
     } catch (error) {
         let pesan = "";
         if (error.response.status.toString().substring(0,1) === "4"){
-            pesan = "Error dari klien2 : ";
+            pesan = "Error dari klien : ";
         }
         else if (error.response.status.toString().substring(0,1) === "5"){
             pesan = "Error dari Satu Sehat : ";
@@ -40,11 +40,11 @@ const by_nik = async (token, nik) => {
 
         return {
             status: error.response.status,
-            message: pesan + error.message
-        };
+            message: pesan + error.response.data.issue[0].details.text
+        }
     }
 }
 
 module.exports = {
-    by_nik
+    cari_by_nik
 };
