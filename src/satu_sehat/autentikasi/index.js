@@ -35,7 +35,8 @@ const generate_token = async () => {
 
         return {
             status: error.response.status,
-            message: pesan + error.response.data.issue[0].details.text
+            message: pesan + error.response.data.issue[0].details.text,
+            data: error.response.data
         }
     }
 }

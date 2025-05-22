@@ -2,7 +2,6 @@
 
 // 3rd
 const axios = require("axios");
-const { parseFlagList } = require("mysql/lib/ConnectionConfig");
 
 // local
 require('dotenv').config();
@@ -38,7 +37,8 @@ const buat = async (token, body) => {
 
         return {
             status: error.response.status,
-            message: pesan + error.response.data.issue[0].details.text
+            message: pesan + error.response.data.issue[0].details.text,
+            data: error.response.data
         }
     }
 }
