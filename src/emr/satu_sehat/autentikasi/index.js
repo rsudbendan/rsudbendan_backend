@@ -4,7 +4,7 @@
 const express = require("express");
 
 // local
-require('dotenv').config();
+// require('dotenv').config();
 // const { fungsi_generate_token } = require("../fungsi");
 const { generate_token } = require("../../../satu_sehat/autentikasi/index");
 

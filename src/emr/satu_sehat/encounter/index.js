@@ -225,6 +225,7 @@ router.post("/perbarui", async (req, res) => {
     }
 
     let id_encounter = req.body.id_encounter;
+    let norm = req.body.norm;
     let noreg = req.body.noreg;
     let status = req.body.status;
     let class_code = req.body.class_code;
@@ -318,45 +319,40 @@ router.post("/perbarui", async (req, res) => {
     try {
         let hasil_perbarui = await perbarui(token, body, id_encounter);
 
-        // let id_encounter = "";
-        // if (hasil_perbarui.status.toString().substring(0, 1) === "2") {
-        //     id_encounter = hasil_perbarui.data.id;
-        // }
-
         let json_response = JSON.stringify(hasil_perbarui.data, null, 2);
 
-        // let connection;
-        // try {
-        //     connection = await koneksi.koneksi_rsbendan.getConnection();
+        let connection;
+        try {
+            connection = await koneksi.koneksi_rsbendan.getConnection();
 
-        //     // Memulai transaksi
-        //     await connection.beginTransaction();
+            // Memulai transaksi
+            await connection.beginTransaction();
 
-        //     // INSERT
-        //     await connection.query(`
-        //         INSERT INTO 
-        //             satusehat_encounter_baru ( 
-        //                 id_encounter,
-        //                 environment, 
-        //                 norm, 
-        //                 noreg, 
-        //                 json_response, 
-        //                 waktu_entry 
-        //             )
-        //         VALUES
-        //         (?, ?, ?, ?, ?, now())
-        //     `, [id_encounter, process.env.SATU_SEHAT_ENVIRONMENT, norm, noreg, json_response]);
+            // INSERT
+            await connection.query(`
+                INSERT INTO 
+                    satusehat_encounter_baru ( 
+                        id_encounter,
+                        environment, 
+                        norm, 
+                        noreg, 
+                        json_response, 
+                        waktu_entry 
+                    )
+                VALUES
+                (?, ?, ?, ?, ?, now())
+            `, [id_encounter, process.env.SATU_SEHAT_ENVIRONMENT, norm, noreg, json_response]);
 
-        //     await connection.commit();
-        // } catch (error) {
-        //     if (connection) await connection.rollback();
-        //     return ({
-        //         status: 400,
-        //         message: "Terjadi kesalahan dalam koneksi database : " + error.message
-        //     });
-        // } finally {
-        //     if (connection) connection.release();
-        // }
+            await connection.commit();
+        } catch (error) {
+            if (connection) await connection.rollback();
+            return ({
+                status: 400,
+                message: "Terjadi kesalahan dalam koneksi database : " + error.message
+            });
+        } finally {
+            if (connection) connection.release();
+        }
 
         return res.status(hasil_perbarui.status).json({
             status: hasil_perbarui.status,

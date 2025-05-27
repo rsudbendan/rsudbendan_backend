@@ -5,9 +5,10 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const port = 9000;
+// const port = 9000;
 
 // local
+require('dotenv').config();
 const emr = require("./src/emr/index");
 
 // application level middleware
@@ -28,6 +29,6 @@ app.use("/", (req, res) => {
     })
 });
 
-app.listen(port, () => {
-    console.log(`Aplikasi berjalan di http://localhost:${port}`);
+app.listen(process.env.PORT, () => {
+    console.log(`Aplikasi berjalan di http://localhost:${process.env.PORT}`);
 });
