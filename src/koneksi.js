@@ -1,5 +1,4 @@
 require('dotenv').config();
-// const mysql = require('mysql');
 const mysql = require('mysql2/promise');
 
 const koneksi_rsbendan = mysql.createPool({
