@@ -1,10 +1,8 @@
 // core
 
 // 3rd
-const axios = require("axios");
 
 // local
-require('dotenv').config();
 
 const convertToISO = (tanggal) => {
     tanggal = tanggal.replace(" ", "T");

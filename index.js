@@ -9,7 +9,6 @@ const app = express();
 // local
 require('dotenv').config();
 const emr = require("./src/emr/index");
-const bpjs = require("./src/bpjs/index");
 
 // application level middleware
 app.use(cors());
@@ -20,7 +19,6 @@ app.use(express.static("public"));
 
 // fungsi
 app.use("/emr", emr);
-app.use("/bpjs", bpjs);
 
 app.use("/", (req, res) => {
     res.status(404);

@@ -21,7 +21,7 @@ const fungsi_buat_timestamp = () => {
         });
     } catch (error) {
         return ({
-            status: 400,
+            status: 500,
             message: "Terjadi kesalahan dalam pembuatan timestamp"
         });
     }
@@ -44,7 +44,7 @@ function fungsi_buat_signature(timestamp) {
         });
     } catch (error) {
         return ({
-            status: 400,
+            status: 500,
             message: "Terjadi kesalahan dalam pembuatan signature"
         });
     }
@@ -71,8 +71,8 @@ function fungsi_dekripsi(key, string) {
         });
     } catch (error) {
         return ({
-            status: 400,
-            message: "Terjadi kesalahan dalam pembuatan signature"
+            status: 500,
+            message: "Terjadi kesalahan saat dekripsi data"
         });
     }
 }
