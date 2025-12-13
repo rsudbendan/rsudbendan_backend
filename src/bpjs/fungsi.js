@@ -50,6 +50,29 @@ function fungsi_buat_signature(timestamp) {
     }
 }
 
+function fungsi_buat_signature_apotek(timestamp) {
+    try {
+        let consumer_id = process.env.BPJS_APOTEK_CONSUMER_ID;
+        let secret_key = process.env.BPJS_APOTEK_SECRET_KEY;
+        let data = `${consumer_id}&${timestamp}`;
+        let hmac = crypto.createHmac('sha256', secret_key).update(data).digest();
+        let signature = Buffer.from(hmac).toString('base64');
+
+        return ({
+            status: 200,
+            message: "Sukses",
+            data: {
+                signature: signature
+            }
+        });
+    } catch (error) {
+        return ({
+            status: 500,
+            message: "Terjadi kesalahan dalam pembuatan signature"
+        });
+    }
+}
+
 function fungsi_dekripsi(key, string) {
     try {
         let encryptMethod = 'aes-256-cbc';
@@ -152,7 +175,89 @@ const fungsi_permintaan_vclaim = async (url, metode, data) => {
     } catch (error) {
         return ({
             status: 400,
-            message: "Terjadi kesalahan pada koneksi ke BPJS"
+            message: "Terjadi kesalahan pada koneksi ke BPJS. " + error.message
+        });
+    }
+}
+
+const fungsi_permintaan_apotek = async (url, metode, data) => {
+    try {
+        let fullUrl = process.env.BPJS_APOTEK_BASE_URL + url;
+
+        let timestamp = "";
+        let hasil_buat_timestamp = await fungsi_buat_timestamp();
+        if (hasil_buat_timestamp.status === 200) {
+            timestamp = hasil_buat_timestamp.data.timestamp;
+        }
+        else {
+            return ({
+                status: hasil_buat_timestamp.status,
+                message: hasil_buat_timestamp.message
+            });
+        }
+
+        let signature = "";
+        let hasil_buat_signature = await fungsi_buat_signature_apotek(timestamp);
+        if (hasil_buat_signature.status === 200) {
+            signature = hasil_buat_signature.data.signature;
+        }
+        else {
+            return ({
+                status: hasil_buat_signature.status,
+                message: hasil_buat_signature.message
+            });
+        }
+
+        let contentType = 'application/json';
+        if (['POST', 'PUT', 'DELETE'].includes(metode)) {
+            contentType = 'application/x-www-form-urlencoded';
+        }
+
+        const headers = {
+            'X-cons-id': process.env.BPJS_APOTEK_CONSUMER_ID,
+            'X-Timestamp': timestamp,
+            'X-Signature': signature,
+            'X-Authorization': '',
+            'accept': 'application/json',
+            'Content-Type': contentType,
+            'user_key': process.env.BPJS_APOTEK_USER_KEY
+        };
+
+        const config = {
+            method: metode.toLowerCase(),
+            url: fullUrl,
+            headers,
+            data,
+            httpsAgent: new (require('https').Agent)({ rejectUnauthorized: false }),
+        };
+
+        const response = await axios(config);
+        const hasil = response.data;
+
+        if (hasil.metaData?.code === '200') {
+            if (metode !== "DELETE") {
+                const encrypted = hasil.response;
+                const key = process.env.BPJS_APOTEK_CONSUMER_ID + process.env.BPJS_APOTEK_SECRET_KEY + timestamp;
+                const decrypted = fungsi_dekripsi(key, encrypted);
+                hasil.response = JSON.parse(decrypted.data.dekripsi);
+            }
+
+            return ({
+                status: 200,
+                message: "Sukses",
+                data: hasil
+            });
+        }
+        else {
+            return ({
+                status: 400,
+                message: hasil
+            });
+        }
+    } catch (error) {
+        return ({
+            status: 400,
+            message: "Terjadi kesalahan pada koneksi ke BPJS. " + error.message
         });
     }
 }
@@ -160,6 +265,8 @@ const fungsi_permintaan_vclaim = async (url, metode, data) => {
 module.exports = {
     fungsi_buat_timestamp,
     fungsi_buat_signature,
+    fungsi_buat_signature_apotek,
     fungsi_dekripsi,
-    fungsi_permintaan_vclaim
+    fungsi_permintaan_vclaim,
+    fungsi_permintaan_apotek
 };

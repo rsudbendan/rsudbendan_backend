@@ -6,15 +6,11 @@ const express = require("express");
 const router = express.Router();
 
 // local
-const monitoring = require("./monitoring/index");
-const peserta = require("./peserta/index");
-const referensi = require("./referensi/index");
-const rujukan = require("./rujukan/index");
+const apotek = require("./apotek/index");
+const vclaim = require("./vclaim/index");
 
 // fungsi
-router.use("/monitoring", monitoring);
-router.use("/peserta", peserta);
-router.use("/referensi", referensi);
-router.use("/rujukan", rujukan);
+router.use("/apotek", apotek);
+router.use("/vclaim", vclaim);
 
 module.exports = router;

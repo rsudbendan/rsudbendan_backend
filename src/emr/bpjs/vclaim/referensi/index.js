@@ -14,7 +14,7 @@ const {
     kecamatan,
     diagnosa_program_prb,
     obat_generik_program_prb
-} = require("../../../bpjs/referensi/index");
+} = require("../../../../bpjs/vclaim/referensi/index");
 
 const router = express.Router();
 

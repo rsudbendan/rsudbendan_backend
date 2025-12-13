@@ -7,7 +7,7 @@ const express = require("express");
 const { 
     no_kartu_bpjs,
     nik
-} = require("../../../bpjs/peserta/index");
+} = require("../../../../bpjs/vclaim/peserta/index");
 
 const router = express.Router();
 

@@ -5,25 +5,23 @@ const express = require("express");
 
 // local
 const { 
-    history_pelayanan_peserta
-} = require("../../../bpjs/monitoring/index");
+    cari_no_kunjungan
+} = require("../../../../bpjs/apotek/sep/index");
 
 const router = express.Router();
 
-router.post("/history_pelayanan_peserta", async (req, res) => {
-    if (!req.body || req.body.no_kartu === undefined || req.body.tgl_awal === undefined || req.body.tgl_akhir === undefined) {
+router.post("/cari_no_kunjungan", async (req, res) => {
+    if (!req.body || req.body.sep === undefined) {
         return res.status(400).json({
             status: 400,
             message: "Parameter belum lengkap"
         });
     }
 
-    let varnokartu = req.body.no_kartu;
-    let vartgl_awal = req.body.tgl_awal;
-    let vartgl_akhir = req.body.tgl_akhir;
+    let varsep = req.body.sep;
 
     try {
-        let hasil = await history_pelayanan_peserta(varnokartu, vartgl_awal, vartgl_akhir);
+        let hasil = await cari_no_kunjungan(varsep);
         return res.status(hasil.status).json({
             status: hasil.status,
             message: hasil.message,

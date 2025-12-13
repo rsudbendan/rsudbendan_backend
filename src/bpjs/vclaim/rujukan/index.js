@@ -3,7 +3,7 @@
 // 3rd
 
 // local
-const { fungsi_permintaan_vclaim } = require("../fungsi");
+const { fungsi_permintaan_vclaim } = require("../../fungsi");
 
 const nomor_rujukan = async (nomor_rujukan) => {
     try {

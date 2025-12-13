@@ -3,11 +3,11 @@
 // 3rd
 
 // local
-const { fungsi_permintaan_vclaim } = require("../fungsi");
+const { fungsi_permintaan_apotek } = require("../../fungsi");
 
-const history_pelayanan_peserta = async (no_kartu, tgl_awal, tgl_akhir) => {
+const rekap_peserta_prb = async (tahun, bulan) => {
     try {
-        let hasil = await fungsi_permintaan_vclaim(`monitoring/HistoriPelayanan/NoKartu/${no_kartu}/tglMulai/${tgl_awal}/tglAkhir/${tgl_akhir}`, "GET", "");
+        let hasil = await fungsi_permintaan_apotek(`Prb/rekappeserta/tahun/${tahun}/bulan/${bulan}`, "GET", "");
         return ({
             status: hasil.status,
             message: hasil.message,
@@ -22,5 +22,5 @@ const history_pelayanan_peserta = async (no_kartu, tgl_awal, tgl_akhir) => {
 }
 
 module.exports = {
-    history_pelayanan_peserta
+    rekap_peserta_prb
 }

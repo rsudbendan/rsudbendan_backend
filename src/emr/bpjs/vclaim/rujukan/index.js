@@ -8,7 +8,7 @@ const {
     nomor_rujukan,
     nomor_kartu,
     nomor_kartu_multi
-} = require("../../../bpjs/rujukan/index");
+} = require("../../../../bpjs/vclaim/rujukan/index");
 
 const router = express.Router();
 
